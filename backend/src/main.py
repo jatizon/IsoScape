@@ -1,13 +1,15 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from dotenv import load_dotenv
+from pathlib import Path
+from src.agents.gemini_llm_agent import GeminiLlmAgent
+from src.services.isometric_service import IsometricService
+from src.controllers.isometric_controller import IsometricController
+from src.models.schemas import CityRequest, IsometricResponse
 
-from agents.gemini_llm_agent import GeminiLlmAgent
-from services.isometric_service import IsometricService
-from controllers.isometric_controller import IsometricController
-from models.schemas import CityRequest, IsometricResponse
-
-load_dotenv()
+# Load .env from backend directory (parent of src)
+env_path = Path(__file__).parent.parent / ".env"
+load_dotenv(env_path)
 
 app = FastAPI(title="IsoScape API")
 

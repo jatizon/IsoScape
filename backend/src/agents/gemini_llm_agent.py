@@ -1,7 +1,7 @@
 import os
 from typing import Dict, Any, Optional
 import google.generativeai as genai
-from agents.llm_agent_interface import LlmAgentInterface
+from src.agents.llm_agent_interface import LlmAgentInterface
 
 
 class GeminiLlmAgent(LlmAgentInterface):
@@ -9,7 +9,7 @@ class GeminiLlmAgent(LlmAgentInterface):
     Implementação do agente LLM usando Google Gemini.
     """
 
-    def __init__(self, api_key: Optional[str] = None, model_name: str = "gemini-1.5-flash"):
+    def __init__(self, api_key: Optional[str] = None, model_name: str = "gemini-2.5-flash-image"):
         """
         Inicializa o agente Gemini.
 
@@ -45,10 +45,14 @@ class GeminiLlmAgent(LlmAgentInterface):
         if not self._configured:
             raise RuntimeError("Gemini agent is not configured properly.")
 
-        config = generation_config or {"response_mime_type": "application/json"}
         model = genai.GenerativeModel(self.model_name)
 
-        response = model.generate_content(prompt, generation_config=config)
+        # For image generation models, we don't need generation_config
+        # Only pass it if explicitly provided and not empty
+        if generation_config:
+            response = model.generate_content(prompt, generation_config=generation_config)
+        else:
+            response = model.generate_content(prompt)
 
         if not response.candidates:
             raise ValueError("Empty response from Gemini.")

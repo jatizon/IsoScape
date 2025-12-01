@@ -1,6 +1,6 @@
 from fastapi import HTTPException
-from models.schemas import CityRequest, IsometricResponse
-from services.isometric_service import IsometricService
+from src.models.schemas import CityRequest, IsometricResponse
+from src.services.isometric_service import IsometricService
 
 
 class IsometricController:
