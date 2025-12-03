@@ -150,6 +150,7 @@ A imagem deve ter proporção quadrada, 1080 × 1080 pixels.
         </div>
       </section>
 
+
       {/* Generator Section */}
       <section className="generator-section">
         <div className="generator-card">
