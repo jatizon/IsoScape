@@ -214,7 +214,7 @@ class GeminiLlmAgent(LlmAgentInterface):
     
     async def generate_content(self, prompt: str, config: Dict) -> Dict:
         model = genai.GenerativeModel(self.model_name)
-        response = model.generate_content(prompt, generation_config=config)
+        response = model.generate_content(prompt)
         # Processa resposta específica do Gemini
         return {"status": "success", "type": "image", ...}
 ```
@@ -270,12 +270,12 @@ Vamos rastrear uma requisição completa:
 
 2. MAIN.PY (FastAPI)
    └─> Recebe requisição
-   └─> Valida JSON automaticamente
+   └─> Valida JSON automatica
    └─> Cria CityRequest DTO (Pydantic valida)
        │
        ▼
 
-3. CONTROLLER (IsometricController)
+3. CONTROLLER (IsometricControllmenteer)
    └─> generate_isometric(request: CityRequest)
    └─> Validação já feita pelo Pydantic ✅
    └─> Chama service
