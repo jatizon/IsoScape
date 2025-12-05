@@ -27,6 +27,7 @@ html {
   overflow-x: hidden;
   background: #0a0c1d;
   color: var(--text-primary);
+  position: relative;
 }
 
 #root {
@@ -40,6 +41,14 @@ html {
   padding: 0;
   display: flex;
   flex-direction: column;
+  position: relative;
+}
+
+.app-shell.generator-page-wrapper {
+  position: relative;
+  z-index: 1;
+  max-width: 100%;
+  width: 100%;
 }
 
 /* Hero Section */
@@ -212,21 +221,32 @@ html {
   margin-bottom: 2rem;
   font-size: 1.25rem;
   font-weight: 700;
-  background: var(--primary-gradient);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+  box-sizing: border-box;
+  overflow: hidden;
 }
 
 .logo-icon {
-  font-size: 1.5rem;
+  width: 30px;
+  height: 30px;
+  object-fit: contain;
+  display: block;
   filter: grayscale(0);
+  flex-shrink: 0;
+  margin: 0;
+  padding: 0;
+}
+
+/* Logo maior no hero da Home */
+.hero-content .logo-icon {
+  width: 75px;
+  height: 75px;
+  margin: -30px -20px;
 }
 
 .logo-text {
   background: var(--primary-gradient);
   -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
+  -webkit-text-fill-color: #ffffff;
   background-clip: text;
 }
 
@@ -301,7 +321,20 @@ html {
 /* Section Headers */
 .section-header {
   text-align: center;
-  margin-bottom: 3rem;
+  margin-bottom: 2rem;
+}
+
+.pricing-section .section-header {
+  margin-bottom: 3.5rem;
+}
+
+.pricing-section .section-title {
+  font-size: clamp(1.75rem, 3.5vw, 2.5rem);
+  margin-bottom: 0.5rem;
+}
+
+.pricing-section .section-subtitle {
+  font-size: 1.1rem;
 }
 
 .section-title {
@@ -423,16 +456,106 @@ html {
   font-size: 0.95rem;
 }
 
-/* Generator Section */
-.generator-section {
-  padding: 0 2rem 4rem;
+/* Generator Page - Nova estrutura limpa */
+.generator-page {
+  min-height: 100vh;
+  width: 100%;
+  max-width: 100%;
   position: relative;
-  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  background: #0a0c1d;
+  overflow-x: hidden;
 }
 
-.generator-card {
-  max-width: 800px;
+.generator-page-bg {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: 
+    linear-gradient(135deg, #0a0c1d 0%, #1a1d35 50%, #0a0c1d 100%),
+    radial-gradient(circle at 20% 30%, rgba(102, 126, 234, 0.15) 0%, transparent 50%),
+    radial-gradient(circle at 80% 70%, rgba(118, 75, 162, 0.15) 0%, transparent 50%);
+  z-index: 0;
+  pointer-events: none;
+}
+
+.generator-header-section {
+  padding: 2rem 2rem 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: relative;
+  z-index: 100;
+  max-width: 1200px;
+  width: 100%;
   margin: 0 auto;
+}
+
+.generator-header-section .logo-badge {
+  margin-bottom: 0;
+}
+
+.generator-header-section .logo-icon {
+  width: 75px;
+  height: 75px;
+  margin: -30px -20px;
+}
+
+.back-button {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(10px);
+  border: 1px solid var(--card-border);
+  border-radius: 12px;
+  color: var(--text-primary);
+  font-size: 0.95rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.back-button:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(102, 126, 234, 0.5);
+  transform: translateX(-4px);
+}
+
+.back-button svg {
+  transition: transform 0.3s ease;
+}
+
+.back-button:hover svg {
+  transform: translateX(-2px);
+}
+
+/* Generator Main Content */
+.generator-main {
+  flex: 1;
+  position: relative;
+  z-index: 100;
+  padding: 2rem 2rem 4rem;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.generator-container {
+  width: 100%;
+  max-width: 800px;
+  position: relative;
+  z-index: 100;
+}
+
+.generator-content {
   background: var(--card-bg);
   backdrop-filter: blur(20px);
   border: 1px solid var(--card-border);
@@ -441,22 +564,27 @@ html {
   box-shadow: 
     0 20px 60px rgba(0, 0, 0, 0.3),
     0 0 0 1px rgba(255, 255, 255, 0.05) inset;
-  animation: fadeInUp 1s ease-out 0.3s backwards;
+  animation: fadeInUp 0.6s ease-out;
+  position: relative;
+  z-index: 100;
 }
 
-.generator-header {
+.generator-title-section {
   text-align: center;
   margin-bottom: 2.5rem;
 }
 
-.generator-header h2 {
+.generator-title-section h2 {
   font-size: 2rem;
   font-weight: 700;
   margin-bottom: 0.5rem;
-  color: var(--text-primary);
+  background: var(--primary-gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
-.generator-header p {
+.generator-title-section p {
   color: var(--text-secondary);
   font-size: 1rem;
 }
@@ -571,6 +699,10 @@ html {
 /* Progress Bar */
 .progress-container {
   margin-top: 2rem;
+  padding: 1.5rem;
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
   animation: fadeIn 0.3s ease-out;
 }
 
@@ -585,19 +717,20 @@ html {
 
 .progress-bar-wrapper {
   width: 100%;
-  height: 8px;
+  height: 10px;
   background: rgba(255, 255, 255, 0.1);
   border-radius: 10px;
   overflow: hidden;
-  margin-bottom: 1rem;
+  margin-bottom: 1.25rem;
   position: relative;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2) inset;
 }
 
 .progress-bar {
   height: 100%;
   background: var(--primary-gradient);
   border-radius: 10px;
-  transition: width 0.3s ease;
+  transition: width 0.1s linear;
   position: relative;
   overflow: hidden;
 }
@@ -627,6 +760,12 @@ html {
   }
 }
 
+.progress-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
 .progress-text {
   text-align: center;
   color: var(--text-secondary);
@@ -636,6 +775,34 @@ html {
 .progress-text strong {
   color: var(--text-primary);
   font-weight: 600;
+}
+
+.progress-stats {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1.5rem;
+  font-size: 0.9rem;
+  margin-top: 0.25rem;
+}
+
+.progress-percentage {
+  font-weight: 700;
+  font-size: 1.25rem;
+  padding: 0.25rem 0.75rem;
+  background: rgba(102, 126, 234, 0.15);
+  border-radius: 8px;
+  border: 1px solid rgba(102, 126, 234, 0.3);
+  color: #667eea;
+}
+
+.progress-time {
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  font-weight: 500;
+  padding: 0.25rem 0.75rem;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
 }
 
 /* Error Message */
@@ -817,7 +984,7 @@ html {
 
 /* Pricing Section */
 .pricing-section {
-  padding: 6rem 2rem;
+  padding: 3rem 2rem;
   position: relative;
   z-index: 1;
 }
@@ -826,13 +993,13 @@ html {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
   gap: 2rem;
-  max-width: 1200px;
+  max-width: 1000px;
   margin: 0 auto;
 }
 
 .pricing-card {
   position: relative;
-  padding: 3rem 2rem;
+  padding: 2rem 1.5rem;
   background: var(--card-bg);
   backdrop-filter: blur(20px);
   border: 1px solid var(--card-border);
@@ -872,13 +1039,13 @@ html {
 
 .pricing-header {
   text-align: center;
-  margin-bottom: 2rem;
+  margin-bottom: 1.25rem;
 }
 
 .pricing-name {
-  font-size: 1.5rem;
+  font-size: 1.35rem;
   font-weight: 700;
-  margin-bottom: 1rem;
+  margin-bottom: 0.75rem;
   color: var(--text-primary);
 }
 
@@ -887,7 +1054,7 @@ html {
   align-items: baseline;
   justify-content: center;
   gap: 0.25rem;
-  margin-bottom: 1rem;
+  margin-bottom: 0.75rem;
 }
 
 .price-currency {
@@ -896,7 +1063,7 @@ html {
 }
 
 .price-amount {
-  font-size: 3.5rem;
+  font-size: 3rem;
   font-weight: 800;
   background: var(--primary-gradient);
   -webkit-background-clip: text;
@@ -912,13 +1079,14 @@ html {
 .pricing-features {
   list-style: none;
   flex-grow: 1;
-  margin-bottom: 2rem;
+  margin-bottom: 1.5rem;
 }
 
 .pricing-features li {
-  padding: 0.75rem 0;
+  padding: 0.5rem 0;
   color: var(--text-secondary);
   border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  font-size: 0.95rem;
 }
 
 .pricing-features li:last-child {
@@ -927,7 +1095,7 @@ html {
 
 .pricing-button {
   width: 100%;
-  padding: 1rem 2rem;
+  padding: 0.875rem 2rem;
   border: 2px solid var(--card-border);
   background: transparent;
   color: var(--text-primary);
@@ -935,7 +1103,7 @@ html {
   font-weight: 600;
   cursor: pointer;
   transition: all 0.3s ease;
-  font-size: 1rem;
+  font-size: 0.95rem;
 }
 
 .pricing-button:hover {
@@ -1013,6 +1181,23 @@ html {
   font-size: 0.9rem;
   border-top: 1px solid var(--card-border);
   margin-top: 4rem;
+  position: relative;
+  z-index: 1;
+}
+
+.generator-footer {
+  text-align: center;
+  padding: 2rem;
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  margin-top: auto;
+  position: relative;
+  z-index: 100;
+  width: 100%;
+  max-width: 1200px;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .footer-highlight {
@@ -1053,17 +1238,47 @@ html {
     gap: 1.5rem;
   }
 
-  .generator-section {
-    padding: 0 1.5rem 3rem;
+  .generator-header-section {
+    padding: 1.5rem 1.5rem 1rem;
+    flex-direction: column;
+    gap: 1rem;
+    align-items: flex-start;
   }
 
-  .generator-card {
+  .generator-header-section .logo-badge {
+    align-self: center;
+  }
+
+  .generator-main {
+    padding: 1.5rem 1.5rem 3rem;
+  }
+
+  .generator-content {
     padding: 2rem 1.5rem;
     border-radius: 24px;
   }
 
-  .generator-header h2 {
+  .generator-title-section {
+    margin-bottom: 2rem;
+  }
+
+  .generator-title-section h2 {
     font-size: 1.75rem;
+  }
+
+  .progress-container {
+    padding: 1.25rem;
+  }
+
+  .progress-stats {
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .progress-percentage,
+  .progress-time {
+    width: 100%;
+    text-align: center;
   }
 
   .hero-badges {
