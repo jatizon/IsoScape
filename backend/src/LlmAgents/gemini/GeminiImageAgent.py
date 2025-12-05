@@ -33,7 +33,7 @@ class GeminiImageAgent(LlmAgentInterface):
             data_bytes = getattr(inline_data, "data", None)
             if isinstance(data_bytes, bytes):
                 image_base64 = base64.b64encode(data_bytes).decode("utf-8")
-                file_path = f"generated_image_{uuid.uuid4()}.png"
+                file_path = f"logos/generated_image_{uuid.uuid4()}.png"
                 with open(file_path, "wb") as f:
                     f.write(data_bytes)
             text = getattr(part, "text", None)
