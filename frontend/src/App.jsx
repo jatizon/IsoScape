@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import axios from 'axios'
 
 const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000'
@@ -10,6 +10,8 @@ function App() {
   const [error, setError] = useState('')
   const [currentCity, setCurrentCity] = useState('')
   const [progress, setProgress] = useState(0)
+  const heroRef = useRef(null)
+  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 })
 
   // Simulação de progresso durante o carregamento
   useEffect(() => {
@@ -30,6 +32,68 @@ function App() {
     }
   }, [isLoading])
 
+  // Mouse tracking para background degradê
+  useEffect(() => {
+    let rafId = null
+    
+    const handleMouseMove = (e) => {
+      if (heroRef.current) {
+        // Cancelar frame anterior se existir
+        if (rafId) {
+          cancelAnimationFrame(rafId)
+        }
+        
+        rafId = requestAnimationFrame(() => {
+          const rect = heroRef.current.getBoundingClientRect()
+          const x = ((e.clientX - rect.left) / rect.width) * 100
+          const y = ((e.clientY - rect.top) / rect.height) * 100
+          setMousePosition({ x, y })
+          
+          // Aplicar variáveis CSS diretamente nos orbs com valores mais intensos
+          const orbs = heroRef.current.querySelectorAll('.gradient-orb')
+          orbs.forEach((orb) => {
+            orb.style.setProperty('--mouse-x', x.toString())
+            orb.style.setProperty('--mouse-y', y.toString())
+          })
+        })
+      }
+    }
+
+    const hero = heroRef.current
+    if (hero) {
+      hero.addEventListener('mousemove', handleMouseMove, { passive: true })
+      return () => {
+        hero.removeEventListener('mousemove', handleMouseMove)
+        if (rafId) {
+          cancelAnimationFrame(rafId)
+        }
+      }
+    }
+  }, [])
+
+  // Scroll animations
+  useEffect(() => {
+    const observerOptions = {
+      threshold: 0.1,
+      rootMargin: '0px 0px -100px 0px'
+    }
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('animate-in')
+        }
+      })
+    }, observerOptions)
+
+    const elements = document.querySelectorAll('.scroll-animate')
+    elements.forEach((el) => observer.observe(el))
+
+    return () => {
+      elements.forEach((el) => observer.unobserve(el))
+    }
+  }, [])
+
   const handleSubmit = async (event) => {
     event.preventDefault()
     const cleanCity = city.trim()
@@ -49,10 +113,7 @@ function App() {
 CITY = ${cleanCity}
 
 Crie uma cena isométrica em miniatura 3D no estilo cartoon, vista em ângulo de 45°, 
-representando de forma clara a cidade de [CITY]. Inclua marcos e atrações turísticas icônicas 
-(assim como: a Praia do Futuro, o Mercado Central, a Catedral Metropolitana de Fortaleza, 
-a Ponte dos Ingleses, o Centro Dragão do Mar de Arte e Cultura, entre outros edifícios 
-característicos).
+representando de forma clara a cidade de [CITY]. Inclua marcos e atrações turísticas icônicas.
 
 Use texturas suaves e refinadas, com materiais PBR realistas, iluminação natural delicada 
 e sombras suaves, refletindo as condições climáticas atuais da cidade para criar uma atmosfera imersiva. 
@@ -84,12 +145,22 @@ A imagem deve ter proporção quadrada, 1080 × 1080 pixels.
   return (
     <div className="app-shell">
       {/* Hero Section */}
-      <header className="hero-section">
-        <div className="hero-background">
+      <header className="hero-section" ref={heroRef}>
+        <div 
+          className="hero-background"
+          style={{
+            '--mouse-x': `${mousePosition.x}%`,
+            '--mouse-y': `${mousePosition.y}%`
+          }}
+        >
           <div className="gradient-orb orb-1"></div>
           <div className="gradient-orb orb-2"></div>
           <div className="gradient-orb orb-3"></div>
+          <div className="gradient-orb orb-4"></div>
+          <div className="gradient-orb orb-5"></div>
+          <div className="gradient-orb orb-6"></div>
         </div>
+        <div className="hero-gradient-overlay"></div>
         <div className="hero-content">
           <div className="logo-badge">
             <span className="logo-icon">🏙️</span>
@@ -129,8 +200,34 @@ A imagem deve ter proporção quadrada, 1080 × 1080 pixels.
         </div>
       </header>
 
+      {/* Stats Section */}
+      <section className="stats-section scroll-animate">
+        <div className="stats-grid">
+          <div className="stat-card">
+            <div className="stat-number">10K+</div>
+            <div className="stat-label">Ilustrações Criadas</div>
+          </div>
+          <div className="stat-card">
+            <div className="stat-number">500+</div>
+            <div className="stat-label">Cidades Disponíveis</div>
+          </div>
+          <div className="stat-card">
+            <div className="stat-number">98%</div>
+            <div className="stat-label">Satisfação dos Usuários</div>
+          </div>
+          <div className="stat-card">
+            <div className="stat-number">24/7</div>
+            <div className="stat-label">Disponibilidade</div>
+          </div>
+        </div>
+      </section>
+
       {/* Features Section */}
-      <section className="features-section">
+      <section className="features-section scroll-animate">
+        <div className="section-header">
+          <h2 className="section-title">Por que escolher IsoScape?</h2>
+          <p className="section-subtitle">Tecnologia de ponta para criar ilustrações únicas</p>
+        </div>
         <div className="features-grid">
           <div className="feature-card">
             <div className="feature-icon">✨</div>
@@ -147,12 +244,141 @@ A imagem deve ter proporção quadrada, 1080 × 1080 pixels.
             <h3>Estilo Isométrico</h3>
             <p>Visual moderno e profissional em perspectiva isométrica 3D</p>
           </div>
+          <div className="feature-card">
+            <div className="feature-icon">🌍</div>
+            <h3>Global</h3>
+            <p>Suporte para cidades de todo o mundo com precisão geográfica</p>
+          </div>
+          <div className="feature-card">
+            <div className="feature-icon">🎯</div>
+            <h3>Personalizável</h3>
+            <p>Adapte as ilustrações às suas necessidades e preferências</p>
+          </div>
+          <div className="feature-card">
+            <div className="feature-icon">💎</div>
+            <h3>Alta Resolução</h3>
+            <p>Imagens em qualidade profissional prontas para impressão</p>
+          </div>
+        </div>
+      </section>
+
+      {/* Testimonials Section */}
+      <section className="testimonials-section scroll-animate">
+        <div className="section-header">
+          <h2 className="section-title">O que nossos usuários dizem</h2>
+          <p className="section-subtitle">Depoimentos de quem já experimentou</p>
+        </div>
+        <div className="testimonials-grid">
+          <div className="testimonial-card">
+            <div className="testimonial-stars">⭐⭐⭐⭐⭐</div>
+            <p className="testimonial-text">"Incrível como a IA consegue capturar a essência de cada cidade. Usei para um projeto de marketing e o resultado foi perfeito!"</p>
+            <div className="testimonial-author">
+              <div className="author-avatar">MC</div>
+              <div className="author-info">
+                <div className="author-name">Maria Costa</div>
+                <div className="author-role">Designer Gráfico</div>
+              </div>
+            </div>
+          </div>
+          <div className="testimonial-card">
+            <div className="testimonial-stars">⭐⭐⭐⭐⭐</div>
+            <p className="testimonial-text">"A velocidade de geração é impressionante. Em segundos tenho uma ilustração profissional pronta para usar."</p>
+            <div className="testimonial-author">
+              <div className="author-avatar">JS</div>
+              <div className="author-info">
+                <div className="author-name">João Silva</div>
+                <div className="author-role">Desenvolvedor</div>
+              </div>
+            </div>
+          </div>
+          <div className="testimonial-card">
+            <div className="testimonial-stars">⭐⭐⭐⭐⭐</div>
+            <p className="testimonial-text">"Perfeito para apresentações e materiais de marketing. A qualidade das ilustrações superou minhas expectativas."</p>
+            <div className="testimonial-author">
+              <div className="author-avatar">AS</div>
+              <div className="author-info">
+                <div className="author-name">Ana Santos</div>
+                <div className="author-role">Gerente de Marketing</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Pricing Section */}
+      <section className="pricing-section scroll-animate">
+        <div className="section-header">
+          <h2 className="section-title">Planos e Preços</h2>
+          <p className="section-subtitle">Escolha o plano ideal para suas necessidades</p>
+        </div>
+        <div className="pricing-grid">
+          <div className="pricing-card">
+            <div className="pricing-header">
+              <h3 className="pricing-name">Básico</h3>
+              <div className="pricing-price">
+                <span className="price-amount">Grátis</span>
+              </div>
+            </div>
+            <ul className="pricing-features">
+              <li>✓ 5 ilustrações por mês</li>
+              <li>✓ Resolução padrão</li>
+              <li>✓ Cidades populares</li>
+              <li>✓ Suporte por email</li>
+            </ul>
+            <button className="pricing-button">Começar Grátis</button>
+          </div>
+          <div className="pricing-card featured">
+            <div className="pricing-badge">Mais Popular</div>
+            <div className="pricing-header">
+              <h3 className="pricing-name">Profissional</h3>
+              <div className="pricing-price">
+                <span className="price-currency">R$</span>
+                <span className="price-amount">29</span>
+                <span className="price-period">/mês</span>
+              </div>
+            </div>
+            <ul className="pricing-features">
+              <li>✓ Ilustrações ilimitadas</li>
+              <li>✓ Alta resolução</li>
+              <li>✓ Todas as cidades</li>
+              <li>✓ Suporte prioritário</li>
+              <li>✓ Download em múltiplos formatos</li>
+            </ul>
+            <button className="pricing-button primary">Assinar Agora</button>
+          </div>
+          <div className="pricing-card">
+            <div className="pricing-header">
+              <h3 className="pricing-name">Empresarial</h3>
+              <div className="pricing-price">
+                <span className="price-currency">R$</span>
+                <span className="price-amount">99</span>
+                <span className="price-period">/mês</span>
+              </div>
+            </div>
+            <ul className="pricing-features">
+              <li>✓ Tudo do Profissional</li>
+              <li>✓ API personalizada</li>
+              <li>✓ Suporte dedicado</li>
+              <li>✓ Customizações avançadas</li>
+              <li>✓ SLA garantido</li>
+            </ul>
+            <button className="pricing-button">Falar com Vendas</button>
+          </div>
+        </div>
+      </section>
+
+      {/* CTA Section */}
+      <section className="cta-section scroll-animate">
+        <div className="cta-content">
+          <h2 className="cta-title">Pronto para começar?</h2>
+          <p className="cta-subtitle">Crie sua primeira ilustração isométrica agora mesmo, sem necessidade de cadastro</p>
+          <button className="cta-button">Experimentar Grátis</button>
         </div>
       </section>
 
 
       {/* Generator Section */}
-      <section className="generator-section">
+      <section className="generator-section scroll-animate">
         <div className="generator-card">
           <div className="generator-header">
             <h2>Crie sua ilustração agora</h2>
